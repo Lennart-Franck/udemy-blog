@@ -1,7 +1,7 @@
 <template>
   <div class="admin-new-post-page">
     <section class="new-post-form">
-      <admin-post-form />
+      <admin-post-form @submit="onSubmitted" />
     </section>
   </div>
 </template>
@@ -11,7 +11,15 @@ import AdminPostForm from "~/components/Admin/AdminPostForm.vue";
 
 export default {
   components: { AdminPostForm },
-  layout: "admin"
+  layout: "admin",
+  middleware: ["check-auth", "auth"],
+  methods: {
+    async onSubmitted(postData) {
+      this.$store.dispatch("addPost", postData).then(() => {
+        this.$router.push("/admin");
+      });
+    }
+  }
 };
 </script>
 

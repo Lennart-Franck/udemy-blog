@@ -6,11 +6,14 @@
     <app-control-input v-model="editedPost.title">
       Title
     </app-control-input>
-    <app-control-input v-model="editedPost.thumbnailLink">
+    <app-control-input v-model="editedPost.thumbnail">
       Thumbnail Link
     </app-control-input>
     <app-control-input control-type="textarea" v-model="editedPost.content">
       Content
+    </app-control-input>
+    <app-control-input control-type="textarea" v-model="editedPost.previewText">
+      Preview Text
     </app-control-input>
 
     <app-button type="submit">Save</app-button>
@@ -19,7 +22,7 @@
       type="button"
       style="margin-left: 10px"
       btn-style="cancel"
-      @click="onCancel"
+      @click="OnCancel"
     >
       Cancel
     </app-button>
@@ -44,14 +47,15 @@ export default {
         : {
             author: "",
             title: "",
-            thumbnailLink: "",
-            content: ""
+            thumbnail: "",
+            content: "",
+            previewText: ""
           }
     };
   },
   methods: {
     OnSave() {
-      console.log(this.editedPost);
+      this.$emit("submit", this.editedPost);
     },
     OnCancel() {
       this.$router.push("/admin");

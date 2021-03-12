@@ -21,21 +21,18 @@
 
 <script>
 export default {
-  asyncData(context, callback) {
-    setTimeout(() => {
-      callback(null, {
-        loadedPost: {
-          id: "1",
-          title: "Hello 1 (ID: " + context.params.id + ")",
-          previewText: "Our first post",
-          author: "Lennart Franck",
-          updatedDate: new Date(),
-          content: "Some dummy text which is definitly not the preview text",
-          thumbnail:
-            "https://www.paymentsjournal.com/wp-content/uploads/2019/11/904-scaled.jpg"
-        }
-      });
-    }, 1000);
+  async asyncData(context) {
+    return context.$axios
+      .$get(process.env.baseUrl + "posts/" + context.params.id + ".json")
+      .then(res => {
+        return {
+          loadedPost: res
+        };
+      })
+      .catch(e => context.error(e));
+  },
+  head: {
+    title: "A Blog Post"
   }
 };
 </script>

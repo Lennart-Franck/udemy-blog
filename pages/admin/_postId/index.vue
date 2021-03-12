@@ -1,7 +1,7 @@
 <template>
   <div class="admin-post-page">
     <section class="update-form">
-      <admin-post-form :post="loadedPost" />
+      <admin-post-form :post="loadedPost" @submit="onSubmitted" />
     </section>
   </div>
 </template>
@@ -10,18 +10,25 @@
 import AdminPostForm from "~/components/Admin/AdminPostForm.vue";
 export default {
   components: { AdminPostForm },
-  data() {
-    return {
-      loadedPost: {
-        author: "Lennart",
-        title: "My awesome post",
-        content: "Super Amazing, thanks for that",
-        thumbnailLink:
-          "https://www.paymentsjournal.com/wp-content/uploads/2019/11/904-scaled.jpg"
-      }
-    };
+  async asyncData(context) {
+    return context.app.$axios
+      .$get(process.env.baseUrl + "posts/" + context.params.postId + ".json")
+      .then(res => {
+        return {
+          loadedPost: { ...res, id: context.params.postId }
+        };
+      })
+      .catch(e => context.error(e));
   },
-  layout: "admin"
+  layout: "admin",
+  middleware: ["check-auth", "auth"],
+  methods: {
+    onSubmitted(editedPost) {
+      this.$store.dispatch("editPost", editedPost).then(() => {
+        this.$router.push("/admin");
+      });
+    }
+  }
 };
 </script>
 
